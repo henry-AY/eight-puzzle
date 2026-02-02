@@ -1,5 +1,7 @@
 import argparse
+
 from puzzle import Puzzle
+from search import *
 
 # This code assumes that the default win condition is:
 
@@ -11,6 +13,7 @@ from puzzle import Puzzle
 
 # doesn't work for n * n, something to update in the future
 def user_input():
+    # grabbed parts of this code from the assignment description pdf
     print("Enter your puzzle, using a 0 to represent the blank. ONLY enter valid 8-puzzle problems. Deliminating each term with a space")
 
     puzzle_r1 = input("Enter the first row: ").split()
@@ -24,6 +27,10 @@ def user_input():
 
     return [puzzle_r1, puzzle_r2, puzzle_r3]
 
+def zero_hueristic(node):
+    return 0
+
+# define man and tile here
 
 def main():
     parser = argparse.ArgumentParser(description="A script that does something with flags.")
@@ -39,12 +46,14 @@ def main():
         grid = user_input()
 
     p_to_solve = Puzzle(grid)
-    p_to_solve.display() # verify
+    print(f"You created the following {p_to_solve.get_size()} * {p_to_solve.get_size()} puzzle:\n")
+    p_to_solve.display() # simple print to verify
 
 
-    # find all of the possible neighbors
+    solution_node = a_star(p_to_solve, zero_hueristic)
 
-    print(p_to_solve.find_neighbors(1, 1))
+    print(f"Solution = {solution_node.puzzle.state}")
+    solution_node.puzzle.display
 
     
 
