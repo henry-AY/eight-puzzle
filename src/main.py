@@ -27,7 +27,7 @@ def user_input():
 
 def main():
     parser = argparse.ArgumentParser(description="A script that does something with flags.")
-    parser.add_argument("--default", action="store_true", help="Use default (seeded) puzzle")
+    parser.add_argument("-d", "--default", action="store_true", help="Use default (seeded) puzzle")
 
     args = parser.parse_args()
 
@@ -40,6 +40,11 @@ def main():
 
     p_to_solve = Puzzle(grid)
     p_to_solve.display() # verify
+
+
+    # find all of the possible neighbors
+
+    print(p_to_solve.find_neighbors(1, 1))
 
     
 
