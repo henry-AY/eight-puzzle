@@ -10,13 +10,13 @@ class Puzzle:
     def __eq__(self, other_puzzle): 
         return self.state == other_puzzle.state
     
+    # https://stackoverflow.com/questions/6754102/typeerror-unhashable-type
     def __hash__(self):
-        return hash(tuple(self.state))
+        return hash(tuple(tuple(x) for x in self.state))
 
     def display(self):
         for row in self.state:
             print(" ".join(str(x) for x in row))
-
 
     def solved(self):
         return (self.state == self.goal_state)

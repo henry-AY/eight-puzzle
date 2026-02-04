@@ -54,9 +54,9 @@ def a_star(puzzle, heuristic, DEBUG):
         if not queue:
             if DEBUG:
                 print("Queue empty, exiting")
-            return None # equivalent to return "failure"
+            return None # return "failure"
         
-        _ , node = heapq.heappop(queue)
+        heap_queue , node = heapq.heappop(queue)
 
         if node.puzzle.solved():
             if DEBUG:
