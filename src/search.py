@@ -41,14 +41,14 @@ def get_puzzle_children(puzzle):
 
     return children
 
-def a_star(puzzle, heuristic, DEBUG):
+def a_star(puzzle, heuristic, DEBUG=False):
     queue = []
     depth = 0 # to calculate the depth, where the solution was found
 
     visited = set()
-    start_node = Node(puzzle, cost=0)
+    initial_node = Node(puzzle, cost=0)
 
-    heapq.heappush(queue, (heuristic(start_node), start_node))
+    heapq.heappush(queue, (heuristic(initial_node), initial_node))
 
     while True:
         if not queue:
@@ -69,7 +69,7 @@ def a_star(puzzle, heuristic, DEBUG):
             if child_puzzle not in visited:
                 new_node = Node(child_puzzle, parent=node, cost=node.cost + 1, depth=node.depth + 1)
 
-                if DEBUG: # Print for debugging + new line
+                if DEBUG: # Print for debugging flag + new line
                     print(f"\n@ Depth {node.depth}")
                     child_puzzle.display()
 

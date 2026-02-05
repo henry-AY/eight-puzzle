@@ -27,6 +27,12 @@ def zero_hueristic(node = None):
 def missing_tile_heuristic(node):
     return node.puzzle.misplaced_tile_sum()
 
+def manhatten_heuristic(node):
+    # the strat with this is to grab the coordinates of the value we're looking for (using the find_value() func)
+    # Then, we find the value of where the number should be originally, and we can use the distance formula
+
+    x1, y1 = node.puzzle.find_value()
+
 
 # This code assumes that the default win condition is:
 
@@ -55,11 +61,18 @@ p_to_solve = Puzzle(grid)
 print(f"You created the following {p_to_solve.get_size()} * {p_to_solve.get_size()} puzzle:\n")
 p_to_solve.display() # simple print to verify
 
+print(f"\nNow Running UCS (A* with h(n) = 0)")
 
-
+# TODO Calculate time metrics
 
 solution_node, solution_depth = a_star(p_to_solve, zero_hueristic, DEBUG)
-
 print(f"Solution found at {solution_depth} depth:")
-
 solution_node.puzzle.display()
+
+
+print(f"\nNow Running A* with Missing Tile Heuristic")
+solution_node_missing_tile, solution_depth_missing_tile = a_star(p_to_solve, missing_tile_heuristic, DEBUG)
+print(f"Solution found at {solution_depth_missing_tile} depth:")
+solution_node_missing_tile.puzzle.display()
+
+# TODO Manhatten distance
