@@ -29,20 +29,23 @@ def zero_hueristic(node = None):
 def missing_tile_heuristic(node):
     return node.puzzle.misplaced_tile_sum()
 
-
+# the idea with this is to grab the coordinates of the value we're looking for (using the find_value() func)
+# Then, we find the value of where the number should be originally, and we can use the distance formula
 def manhatten_heuristic(node):
-    # the strat with this is to grab the coordinates of the value we're looking for (using the find_value() func)
-    # Then, we find the value of where the number should be originally, and we can use the distance formula
+    goal_puzzle = Puzzle(grid)
+
 
     flat_grid = reduce(operator.add, grid)
 
     total_distance = 0
     
     for i in flat_grid:
+        if i == 0: # skip the blank position
+            continue
         x1, y1 = node.puzzle.find_value(i)
-        x2, y2 = Puzzle(grid).find_value(i)
+        x2, y2 = goal_puzzle.find_value(i)
 
-        total_distance += abs((x1 - x2) + (y1 - y2))
+        total_distance += abs(x1 - x2) + abs(y1 - y2)
 
     return total_distance
 
