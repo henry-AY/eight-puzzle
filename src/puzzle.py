@@ -1,3 +1,6 @@
+import operator
+from functools import reduce
+
 class Puzzle:
 
     def __init__(self, arr):
@@ -31,9 +34,8 @@ class Puzzle:
             for j in range(len(self.state[0])):
                 if self.state[i][j] == value:
                     return i, j
-        raise Exception("Sorry, does not contain {value}") # hard fail, because there's not a point in running if the puzzle doesn't contain a 0
+        raise Exception(f"Sorry, does not contain {value}") # hard fail, because there's not a point in running if the puzzle doesn't contain a 0
     
-    # TODO Does the missing tile heuristic count the 0 as a missing tile?
     def misplaced_tile_sum(self):
         counter = 0
 

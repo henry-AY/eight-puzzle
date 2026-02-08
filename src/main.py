@@ -2,15 +2,13 @@ import argparse
 
 from puzzle import *
 from search import *
-import operator
-from functools import reduce
 import time
 
 
 # doesn't work for n * n, something to update in the future
 def user_input():
     # grabbed parts of this code from the assignment description pdf
-    print("Enter your puzzle, using a 0 to represent the blank. ONLY enter valid 8-puzzle problems. Deliminating each term with a space")
+    print("Enter your puzzle, using a 0 to represent the blank. Deliminating each term with a space")
 
     puzzle_r1 = input("Enter the first row: ").split()
     puzzle_r2 = input("Enter the second row: ").split()
@@ -38,12 +36,28 @@ def manhatten_heuristic(node):
 
     for i in range(3):
         for j in range(3):
-            if i == 0:
-                val = node.puzzle.state[i][j]
+            val = node.puzzle.state[i][j]
             if val != 0:
                 x1, y1 = goal_puzzle_pos[val]
                 total_distance += abs(i - x1) + abs(j - y1)
     return total_distance
+
+# from my understanding, this only works for an 8-puzzle, so something that would need to be updated for a n-puzzle
+def is_solvable(grid):
+    flat_grid = reduce(operator.add, grid)
+
+    inversion_count = 0
+
+    for i in range(len(flat_grid)):
+        for j in range(i + 1, len(flat_grid)):
+            if flat_grid[i] != 0 and flat_grid[j] != 0 and flat_grid[i] > flat_grid[j]:
+                inversion_count += 1
+    if DEBUG:
+        print(f"is_solvable: {inversion_count} and returning {inversion_count % 2}.")
+
+    return (inversion_count % 2 == 0) # verify its even, otherwise the eight puzzle is not solvable
+
+
 
 
 # This code assumes that the default win condition is:
@@ -66,7 +80,13 @@ DEBUG = args.debug
 if args.simple:
     grid = [[8, 0, 6], [5, 4, 7], [2, 3, 1]]
 else:
-    grid = user_input()
+    while True:
+        grid = user_input()
+
+        if not is_solvable(grid):
+            print("\nUnfotunately this puzzle has an even number of inversions, and therefore is not solvable, please enter a new puzzle:")
+        else:
+            break
 
 p_to_solve = Puzzle(grid)
 
@@ -81,33 +101,33 @@ p_to_solve.display() # simple print to verify
 print(f"\nNow Running UCS (A* with h(n) = 0)")
 start = time.time()
 
-solution_node, solution_depth = a_star(p_to_solve, zero_hueristic, DEBUG)
+solution_node, solution_depth, nodes_expanded = a_star(p_to_solve, zero_hueristic, DEBUG)
 
 end = time.time()
 length = end - start
-print(f"Solution found at {solution_depth} depth with a duration of ~{length}:")
+print(f"Solution found at {solution_depth} depth with a duration of ~{length}, and {nodes_expanded} nodes expanded:")
 solution_node.puzzle.display()
 
 
 print(f"\nNow Running A* with Missing Tile Heuristic")
 start_missing_tile = time.time()
 
-solution_node_missing_tile, solution_depth_missing_tile = a_star(p_to_solve, missing_tile_heuristic, DEBUG)
+solution_node_missing_tile, solution_depth_missing_tile, nodes_expanded = a_star(p_to_solve, missing_tile_heuristic, DEBUG)
 
 end_missing_tile = time.time()
 length = end_missing_tile - start_missing_tile
-print(f"Solution found at {solution_depth_missing_tile} depth with a duration of ~{length}:")
+print(f"Solution found at {solution_depth_missing_tile} depth with a duration of ~{length}, and {nodes_expanded} nodes expanded:")
 solution_node_missing_tile.puzzle.display()
 
 
 print(f"\nNow Running A* with Manhattan Distance Heuristic")
 start_manhattan = time.time()
 
-solution_node_manhatten, solution_depth_manhatten = a_star(p_to_solve, manhatten_heuristic, DEBUG)
+solution_node_manhatten, solution_depth_manhatten, nodes_expanded = a_star(p_to_solve, manhatten_heuristic, DEBUG)
 
 end_manhattan = time.time()
 length = end_manhattan - start_manhattan
-print(f"Solution found at {solution_depth_manhatten} depth with a duration of ~{length}:")
+print(f"Solution found at {solution_depth_manhatten} depth with a duration of ~{length}, and {nodes_expanded} nodes expanded:")
 solution_node_manhatten.puzzle.display()
 
 # TODO Manhatten distance

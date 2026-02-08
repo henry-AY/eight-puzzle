@@ -43,25 +43,22 @@ def get_puzzle_children(puzzle):
 
 def a_star(puzzle, heuristic, DEBUG=False):
     queue = []
-    depth = 0 # to calculate the depth, where the solution was found
+    expanded = 0
 
     visited = set()
     initial_node = Node(puzzle, cost=0)
 
     heapq.heappush(queue, (heuristic(initial_node), initial_node))
 
-    while True:
-        if not queue:
-            if DEBUG:
-                print("Queue empty, exiting")
-            return None # return "failure"
-        
-        heap_queue , node = heapq.heappop(queue)
+    while queue:
+        _ , node = heapq.heappop(queue)
+
+        expanded += 1
 
         if node.puzzle.solved():
             if DEBUG:
                 print("Solved, exiting")
-            return node, node.depth # solved puzzle
+            return node, node.depth, expanded # solved puzzle
         
         visited.add(node.puzzle) # append the state of the puzzle
 
@@ -75,3 +72,7 @@ def a_star(puzzle, heuristic, DEBUG=False):
 
                 new_cost = new_node.cost + heuristic(new_node)
                 heapq.heappush(queue, (new_cost, new_node))
+
+    if DEBUG:
+        print("Queue empty, exiting")
+    return None # return "failure"
