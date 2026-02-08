@@ -39,7 +39,7 @@ class Puzzle:
 
         for i in range(len(self.state)):
             for j in range(len(self.state[0])):
-                if self.state[i][j] != self.goal_state[i][j]:
+                if self.state[i][j] != 0 and self.state[i][j] != self.goal_state[i][j]:
                     counter += 1
 
         return counter

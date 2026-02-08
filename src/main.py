@@ -4,6 +4,8 @@ from puzzle import *
 from search import *
 import operator
 from functools import reduce
+import time
+
 
 # doesn't work for n * n, something to update in the future
 def user_input():
@@ -32,21 +34,15 @@ def missing_tile_heuristic(node):
 # the idea with this is to grab the coordinates of the value we're looking for (using the find_value() func)
 # Then, we find the value of where the number should be originally, and we can use the distance formula
 def manhatten_heuristic(node):
-    goal_puzzle = Puzzle(grid)
-
-
-    flat_grid = reduce(operator.add, grid)
-
     total_distance = 0
-    
-    for i in flat_grid:
-        if i == 0: # skip the blank position
-            continue
-        x1, y1 = node.puzzle.find_value(i)
-        x2, y2 = goal_puzzle.find_value(i)
 
-        total_distance += abs(x1 - x2) + abs(y1 - y2)
-
+    for i in range(3):
+        for j in range(3):
+            if i == 0:
+                val = node.puzzle.state[i][j]
+            if val != 0:
+                x1, y1 = goal_puzzle_pos[val]
+                total_distance += abs(i - x1) + abs(j - y1)
     return total_distance
 
 
@@ -74,21 +70,44 @@ else:
 
 p_to_solve = Puzzle(grid)
 
+goal_puzzle_pos = { 1: (0,0), 2: (0,1), 3: (0,2),
+                    4: (1,0), 5: (1,1), 6: (1,2),
+                    7: (2,0), 8: (2,1)
+                }
+
 print(f"You created the following {p_to_solve.get_size()} * {p_to_solve.get_size()} puzzle:\n")
 p_to_solve.display() # simple print to verify
 
 print(f"\nNow Running UCS (A* with h(n) = 0)")
-
-# TODO Calculate time metrics
+start = time.time()
 
 solution_node, solution_depth = a_star(p_to_solve, zero_hueristic, DEBUG)
-print(f"Solution found at {solution_depth} depth:")
+
+end = time.time()
+length = end - start
+print(f"Solution found at {solution_depth} depth with a duration of ~{length}:")
 solution_node.puzzle.display()
 
 
 print(f"\nNow Running A* with Missing Tile Heuristic")
+start_missing_tile = time.time()
+
 solution_node_missing_tile, solution_depth_missing_tile = a_star(p_to_solve, missing_tile_heuristic, DEBUG)
-print(f"Solution found at {solution_depth_missing_tile} depth:")
+
+end_missing_tile = time.time()
+length = end_missing_tile - start_missing_tile
+print(f"Solution found at {solution_depth_missing_tile} depth with a duration of ~{length}:")
 solution_node_missing_tile.puzzle.display()
+
+
+print(f"\nNow Running A* with Manhattan Distance Heuristic")
+start_manhattan = time.time()
+
+solution_node_manhatten, solution_depth_manhatten = a_star(p_to_solve, manhatten_heuristic, DEBUG)
+
+end_manhattan = time.time()
+length = end_manhattan - start_manhattan
+print(f"Solution found at {solution_depth_manhatten} depth with a duration of ~{length}:")
+solution_node_manhatten.puzzle.display()
 
 # TODO Manhatten distance
