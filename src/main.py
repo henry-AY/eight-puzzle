@@ -29,13 +29,13 @@ def zero_hueristic(node = None):
 def missing_tile_heuristic(node):
     return node.puzzle.misplaced_tile_sum()
 
-# the idea with this is to grab the coordinates of the value we're looking for (using the find_value() func)
+# the idea with this is to grab the coordinates of the value we're looking for.
 # Then, we find the value of where the number should be originally, and we can use the distance formula
 def manhatten_heuristic(node):
     total_distance = 0
 
-    for i in range(3):
-        for j in range(3):
+    for i in range(0, 3):
+        for j in range(0, 3):
             val = node.puzzle.state[i][j]
             if val != 0:
                 x1, y1 = goal_puzzle_pos[val]
@@ -57,6 +57,20 @@ def is_solvable(grid):
 
     return (inversion_count % 2 == 0) # verify its even, otherwise the eight puzzle is not solvable
 
+def run_a_star_helper(text, heuristic, puzzle):
+    print(f"\nNow Running {text}")
+    start = time.time()
+
+    solution_node, solution_depth, nodes_expanded = a_star(puzzle, heuristic, DEBUG)
+
+    end = time.time()
+    length = end - start
+
+    if not solution_node:
+        print(f"No solution found for: {puzzle.display()}")
+    else:
+        print(f"Solution found at {solution_depth} depth with a duration of ~{length:.5f}, and {nodes_expanded} nodes expanded:")
+        solution_node.puzzle.display()
 
 
 
@@ -90,6 +104,8 @@ else:
 
 p_to_solve = Puzzle(grid)
 
+# This list represents the expected coordinates of the numbers in a 3x3 matrix. 
+# This exists, for a much faster lookup time, which helps improve the speed of the manhattan alg.
 goal_puzzle_pos = { 1: (0,0), 2: (0,1), 3: (0,2),
                     4: (1,0), 5: (1,1), 6: (1,2),
                     7: (2,0), 8: (2,1)
@@ -98,36 +114,11 @@ goal_puzzle_pos = { 1: (0,0), 2: (0,1), 3: (0,2),
 print(f"You created the following {p_to_solve.get_size()} * {p_to_solve.get_size()} puzzle:\n")
 p_to_solve.display() # simple print to verify
 
-print(f"\nNow Running UCS (A* with h(n) = 0)")
-start = time.time()
+# running UCS
+run_a_star_helper("UCS (A* with h(n) = 0)", zero_hueristic, p_to_solve)
 
-solution_node, solution_depth, nodes_expanded = a_star(p_to_solve, zero_hueristic, DEBUG)
+# running A* w/ missing tile heuristic
+run_a_star_helper("A* with Missing Tile Heuristic", missing_tile_heuristic, p_to_solve)
 
-end = time.time()
-length = end - start
-print(f"Solution found at {solution_depth} depth with a duration of ~{length}, and {nodes_expanded} nodes expanded:")
-solution_node.puzzle.display()
-
-
-print(f"\nNow Running A* with Missing Tile Heuristic")
-start_missing_tile = time.time()
-
-solution_node_missing_tile, solution_depth_missing_tile, nodes_expanded = a_star(p_to_solve, missing_tile_heuristic, DEBUG)
-
-end_missing_tile = time.time()
-length = end_missing_tile - start_missing_tile
-print(f"Solution found at {solution_depth_missing_tile} depth with a duration of ~{length}, and {nodes_expanded} nodes expanded:")
-solution_node_missing_tile.puzzle.display()
-
-
-print(f"\nNow Running A* with Manhattan Distance Heuristic")
-start_manhattan = time.time()
-
-solution_node_manhatten, solution_depth_manhatten, nodes_expanded = a_star(p_to_solve, manhatten_heuristic, DEBUG)
-
-end_manhattan = time.time()
-length = end_manhattan - start_manhattan
-print(f"Solution found at {solution_depth_manhatten} depth with a duration of ~{length}, and {nodes_expanded} nodes expanded:")
-solution_node_manhatten.puzzle.display()
-
-# TODO Manhatten distance
+# running A* w/ Manhattan heuristic
+run_a_star_helper("A* with Manhattan Distance Heuristic", manhatten_heuristic, p_to_solve)

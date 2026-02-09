@@ -14,7 +14,7 @@ class Node:
         self.cost = cost
         self.depth = depth
     
-    # ran into '<' not supported between node instances, and found this helpful article on how to fix it
+    # ran into '<', '>', '=' not supported between node instances, and found this helpful article on how to fix it
     # https://stackoverflow.com/questions/66198575/typeerror-not-supported-between-instances-of-node-and-node
 
     def __eq__(self, value):
@@ -43,7 +43,7 @@ def get_puzzle_children(puzzle):
 
 def a_star(puzzle, heuristic, DEBUG=False):
     queue = []
-    expanded = 0
+    expanded = 0 # num of nodes expanded, this lets us visually see how well each algorithm is performing beyond just time stamps.
 
     visited = set()
     initial_node = Node(puzzle, cost=0)
@@ -51,7 +51,7 @@ def a_star(puzzle, heuristic, DEBUG=False):
     heapq.heappush(queue, (heuristic(initial_node), initial_node))
 
     while queue:
-        _ , node = heapq.heappop(queue)
+        _ , node = heapq.heappop(queue) # pop both the quee and the node, however, we can omit the queue
 
         expanded += 1
 
@@ -62,7 +62,7 @@ def a_star(puzzle, heuristic, DEBUG=False):
         
         visited.add(node.puzzle) # append the state of the puzzle
 
-        for child_puzzle in get_puzzle_children(node.puzzle):
+        for child_puzzle in get_puzzle_children(node.puzzle): # look at every possible child node, and IFF not already visited, then we append the new node with the new cost
             if child_puzzle not in visited:
                 new_node = Node(child_puzzle, parent=node, cost=node.cost + 1, depth=node.depth + 1)
 
