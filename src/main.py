@@ -43,6 +43,7 @@ def manhatten_heuristic(node):
     return total_distance
 
 # from my understanding, this only works for an 8-puzzle, so something that would need to be updated for a n-puzzle
+# This function code is a somewhat modified verison of: https://www.geeksforgeeks.org/dsa/check-instance-8-puzzle-solvable/
 def is_solvable(grid):
     flat_grid = reduce(operator.add, grid)
 
