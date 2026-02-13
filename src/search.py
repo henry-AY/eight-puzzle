@@ -41,7 +41,7 @@ def get_puzzle_children(puzzle):
 
     return children
 
-def a_star(puzzle, heuristic, DEBUG=False):
+def a_star(puzzle, heuristic, DEBUG=False, VERBOSE=False):
     queue = []
     expanded = 0 # num of nodes expanded, this lets us visually see how well each algorithm is performing beyond just time stamps.
 
@@ -51,9 +51,13 @@ def a_star(puzzle, heuristic, DEBUG=False):
     heapq.heappush(queue, (heuristic(initial_node), initial_node))
 
     while queue:
-        _ , node = heapq.heappop(queue) # pop both the quee and the node, however, we can omit the queue
+        f_n , node = heapq.heappop(queue) # pop both the quee and the node, however, we can omit the queue
 
         expanded += 1
+
+        if DEBUG:
+            print(f"\nPopped min node with f(n) = {f_n} and g(n) = {node.cost}")
+            node.puzzle.display()
 
         if node.puzzle.solved():
             if DEBUG:
@@ -66,8 +70,8 @@ def a_star(puzzle, heuristic, DEBUG=False):
             if child_puzzle not in visited:
                 new_node = Node(child_puzzle, parent=node, cost=node.cost + 1, depth=node.depth + 1)
 
-                if DEBUG: # Print for debugging flag + new line
-                    print(f"\n@ Depth {node.depth}")
+                if VERBOSE: # Print for debugging flag + new line
+                    print(f"\nChild Puzzle @ Depth {node.depth}")
                     child_puzzle.display()
 
                 new_cost = new_node.cost + heuristic(new_node)

@@ -8,6 +8,7 @@ import time
 # doesn't work for n * n, something to update in the future
 def user_input():
     # grabbed parts of this code from the assignment description pdf
+    print("Welcome to the 8-puzzle algorithm solver!\n")
     print("Enter your puzzle, using a 0 to represent the blank. Deliminating each term with a space")
 
     puzzle_r1 = input("Enter the first row: ").split()
@@ -62,15 +63,15 @@ def run_a_star_helper(text, heuristic, puzzle):
     print(f"\nNow Running {text}")
     start = time.time()
 
-    solution_node, solution_depth, nodes_expanded = a_star(puzzle, heuristic, DEBUG)
+    solution_node, solution_depth, nodes_expanded = a_star(puzzle, heuristic, DEBUG, VERBOSE)
 
     end = time.time()
     length = end - start
 
     if not solution_node:
-        print(f"No solution found for: {puzzle.display()}")
+        print(f"\nNo solution found for: {puzzle.display()}")
     else:
-        print(f"Solution found at {solution_depth} depth with a duration of ~{length:.5f}, and {nodes_expanded} nodes expanded:")
+        print(f"\nSolution found at {solution_depth} depth with a duration of ~{length:.5f}, and {nodes_expanded} nodes expanded:")
         solution_node.puzzle.display()
 
 
@@ -86,10 +87,12 @@ def run_a_star_helper(text, heuristic, puzzle):
 parser = argparse.ArgumentParser(description="A script that does something with flags.")
 parser.add_argument("-s", "--simple", action="store_true", help="Use default (seeded) puzzle")
 parser.add_argument("-d", "--debug", action="store_true", help="Debug mode to print")
+parser.add_argument("-dd", "--verbose", action="store_true", help="Debug mode to print (verbose)")
 
 args = parser.parse_args()
 
 DEBUG = args.debug
+VERBOSE = args.verbose
 
 # Step 1: grab user input (otherwise use default seeded puzzle)
 if args.simple:
