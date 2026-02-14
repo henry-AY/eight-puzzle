@@ -1,11 +1,7 @@
 # CS170 Eight Puzzle Problem
 
 ## Introduction
-A sliding tile puzzle is a combination puzzle (see Figure 1 for an example of starting and goal state), where
-you slide around a blank tile with numbered tiles, in hopes of reaching the goal state (generally tiles
-arranged in sequential pieces). The most common sizes are the 3x3 (8-puzzle) and the 4x4 (15-puzzle).
-In this project, I worked on the 3x3 puzzle, solving with the Uniform Cost Algorithm and A-star with
-two different heuristics. Feel free to run this repository and experiment with the different algorithms and puzzles.
+A sliding tile puzzle is a combination puzzle, where you slide around a blank tile with numbered tiles, in hopes of reaching the goal state (generally tiles arranged in sequential pieces). The most common sizes are the 3x3 (8-puzzle) and the 4x4 (15-puzzle). In this project, I worked on the 3x3 puzzle, solving with the Uniform Cost Algorithm and A-star with two different heuristics. Feel free to run this repository and experiment with the different algorithms and puzzles.
 
 ## Cloning the Repository
 
